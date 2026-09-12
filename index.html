@@ -134,36 +134,6 @@
         font-size: 0.9rem;
         color: #d9c58a;
     }
-    .map-stage-wrap {
-        position: relative;
-        width: 100%;
-        max-width: 260px;
-        margin: 0 auto 20px;
-    }
-    .region-wrap {
-        border-radius: 12px;
-        overflow: hidden;
-        background-color: #dce8ef;
-        width: 100%;
-        aspect-ratio: 4 / 3;
-    }
-    .region-wrap svg {
-        width: 100%;
-        height: 100%;
-        display: block;
-    }
-    .map-toggle {
-        display: block;
-        margin: 0 auto 18px;
-        background: none;
-        border: 1px solid #c9a227;
-        color: #7a5b12;
-        border-radius: 6px;
-        padding: 5px 12px;
-        font-size: 0.72rem;
-        cursor: pointer;
-        font-family: inherit;
-    }
     .real-map-note {
         font-size: 0.7rem;
         color: #5f6c6f;
@@ -260,51 +230,9 @@
         'Londres': [51.51, -0.13]
     };
 
-    // ===== Mapas regionais detalhados (política real) =====
-    const REGION_MAPS = {
-        Europa: {
-            countries: ['Portugal', 'Espanha', 'França', 'Itália', 'Reino Unido'],
-            viewW: 600, viewH: 450, lonMin: -12, lonMax: 24, latMin: 34, latMax: 61,
-            shapes: [
-                { country: null, d: 'M266.7,0 L600,0 L600,183.3 L533.3,266.7 L450,283.3 L428.3,253.3 L416.7,241.7 L373.3,241.7 L316.7,251.7 L326.7,225 L336.7,200 L306.7,191.7 L296.7,170 L241.7,166.7 L233.3,158.3 L316.7,133.3 L366.7,100 L366.7,50 Z' },
-                { country: null, d: 'M78.3,96.7 L108.3,106.7 L100,126.7 L91.7,150 L41.7,158.3 L38.3,135 L58.3,108.3 Z' },
-                { country: 'Reino Unido', d: 'M148.3,40 L133.3,58.3 L100,75 L115,85 L140,106.7 L120,126.7 L113.3,155 L105,181.7 L168.3,171.7 L223.3,170 L215,158.3 L228.3,135 L196.7,121.7 L166.7,86.7 L155,83.3 L166.7,55 Z' },
-                { country: 'França', d: 'M241.7,166.7 L201.7,193.3 L125,206.7 L163.3,230 L180,256.7 L175,291.7 L230,305 L250,300 L290,295 L321.7,288.3 L316.7,281.7 L316.7,251.7 L326.7,225 L336.7,200 L306.7,191.7 L296.7,170 Z' },
-                { country: 'França', d: 'M356.7,300 L358.3,306.7 L350,323.3 L343.3,311.7 L353.3,300 Z' },
-                { country: 'Espanha', d: 'M66.7,293.3 L100,291.7 L136.7,293.3 L170,295 L253.3,303.3 L236.7,333.3 L203.3,358.3 L191.7,378.3 L126.7,405 L106.7,416.7 L76.7,396.7 L83.3,375 L86.7,350 L95,333.3 L73.3,300 Z' },
-                { country: 'Portugal', d: 'M51.7,316.7 L55,320 L51.7,340 L43.3,360 L41.7,371.7 L51.7,400 L76.7,400 L83.3,391.7 L83.3,375 L86.7,350 L95,333.3 L63.3,316.7 Z' },
-                { country: 'Itália', d: 'M428.3,253.3 L405,260 L405,281.7 L465,318.3 L498.3,343.3 L481.7,353.3 L461.7,380 L438.3,340 L396.7,315 L371.7,288.3 L348.3,276.7 L328.3,260 L316.7,251.7 L373.3,241.7 L416.7,241.7 Z' },
-                { country: 'Itália', d: 'M406.7,380 L460,378.3 L455,400 L406.7,405 Z' },
-                { country: 'Itália', d: 'M336.7,328.3 L361.7,333.3 L358.3,365 L340,363.3 Z' }
-            ]
-        },
-        Brasil: {
-            countries: ['Brasil'],
-            viewW: 400, viewH: 400, lonMin: -74, lonMax: -34, latMin: -34, latMax: 6,
-            shapes: [
-                { country: 'Brasil', d: 'M140,10 L230,40 L300,70 L360,90 L390,140 L360,190 L340,260 L310,290 L260,310 L230,360 L210,390 L170,360 L200,310 L160,260 L140,220 L50,160 L40,100 L70,60 L140,40 Z' }
-            ]
-        },
-        Angola: {
-            countries: ['Angola'],
-            viewW: 400, viewH: 400, lonMin: 10, lonMax: 26, latMin: -20, latMax: -3,
-            shapes: [
-                { country: 'Angola', d: 'M50,47.1 L75,70.6 L75,141.2 L75,235.3 L50,352.9 L225,329.4 L300,282.4 L350,188.2 L275,70.6 L150,47.1 Z' }
-            ]
-        }
-    };
-
-    // ===== Modo "mapa real" (OpenStreetMap via Leaflet) — precisa internet =====
-    // Fica desligado por padrão (o site continua funcionando 100% offline).
-    // Só carrega Leaflet.js da internet se a pessoa clicar no botão pra testar.
-    let useRealMap = false;
+    // ===== Mapa real (OpenStreetMap via Leaflet) =====
     let leafletLoading = false;
     let realMapInstance = null;
-
-    function toggleMapMode() {
-        useRealMap = !useRealMap;
-        render();
-    }
 
     function ensureLeaflet(callback) {
         if (window.L) { callback(); return; }
@@ -338,64 +266,6 @@
         L.marker(coord).addTo(map).bindPopup(`${current.city}, ${current.country}`).openPopup();
         realMapInstance = map;
         setTimeout(() => map.invalidateSize(), 150);
-    }
-
-    function latLonToXYRegion(lat, lon, region) {
-        return {
-            x: (lon - region.lonMin) / (region.lonMax - region.lonMin) * region.viewW,
-            y: (region.latMax - lat) / (region.latMax - region.latMin) * region.viewH
-        };
-    }
-
-    // Mapa político de verdade (Europa/Brasil/Angola) com o país atual
-    // destacado em dourado e o pino na cidade exata.
-    function buildZoomedMapSVG(current) {
-        const coord = COORDS[current.city];
-        let region = null, regionKey = null;
-        for (const [key, r] of Object.entries(REGION_MAPS)) {
-            if (r.countries.includes(current.country)) { region = r; regionKey = key; break; }
-        }
-        if (!region || !coord) return { html: '', regionKey: null };
-
-        const shapesHtml = region.shapes.map(s => {
-            const active = s.country === current.country;
-            const fill = active ? '#c9a227' : '#b9c6d6';
-            const stroke = active ? '#7a5b12' : '#7d8fa3';
-            return `<path d="${s.d}" fill="${fill}" stroke="${stroke}" stroke-width="1"/>`;
-        }).join('');
-
-        const { x, y } = latLonToXYRegion(coord[0], coord[1], region);
-        const pin = `
-            <circle cx="${x}" cy="${y}" r="5" fill="none" stroke="#c9a227" stroke-width="2" class="map-pulse"/>
-            <path transform="translate(${x},${y - 17})"
-                d="M0,0 C-7,0 -12,5 -12,12 C-12,21 0,34 0,34 C0,34 12,21 12,12 C12,5 7,0 0,0 Z"
-                fill="#c9a227" stroke="#7a5b12" stroke-width="1"/>
-            <circle cx="${x}" cy="${y - 5}" r="4" fill="#fbf9f4"/>
-        `;
-
-        const html = `
-            <svg viewBox="0 0 ${region.viewW} ${region.viewH}" xmlns="http://www.w3.org/2000/svg">
-                <rect width="${region.viewW}" height="${region.viewH}" fill="#dce8ef"/>
-                ${shapesHtml}
-                ${pin}
-            </svg>
-        `;
-        return { html, regionKey };
-    }
-
-    // Monta o bloco do mapa: mapa político simples (Europa/Brasil/Angola)
-    // com o país atual destacado em dourado e o pino na cidade exata.
-    function buildMapBlock(current) {
-        const zoomed = buildZoomedMapSVG(current);
-        if (!zoomed.html) return '';
-
-        return `
-            <div class="map-stage-wrap">
-                <div class="region-wrap">
-                    ${zoomed.html}
-                </div>
-            </div>
-        `;
     }
 
     // ===== Converte data/hora local (num fuso específico) pra instante UTC real =====
@@ -834,19 +704,10 @@
         }
 
         const hasMapData = !!COORDS[current.city];
-        let mapSection = '';
-        if (hasMapData && useRealMap) {
-            mapSection = `
-                <div id="realMapBox"></div>
-                <div class="real-map-note">🌐 Mapa real (OpenStreetMap) — precisa de internet</div>
-                <button class="map-toggle" id="mapToggleBtn">🗺️ Ver mapa simples (offline)</button>
-            `;
-        } else if (hasMapData) {
-            mapSection = `
-                ${buildMapBlock(current)}
-                <button class="map-toggle" id="mapToggleBtn">🌐 Ver mapa real (precisa internet)</button>
-            `;
-        }
+        const mapSection = hasMapData ? `
+            <div id="realMapBox"></div>
+            <div class="real-map-note">🌐 Mapa real (OpenStreetMap)</div>
+        ` : '';
 
         content.innerHTML = `
             ${dayBadge}
@@ -863,12 +724,9 @@
             <div class="${activityClass}">${activityText}</div>
         `;
 
-        if (hasMapData && useRealMap) {
+        if (hasMapData) {
             ensureLeaflet(() => initRealMap(current));
         }
-
-        const toggleBtn = document.getElementById('mapToggleBtn');
-        if (toggleBtn) toggleBtn.addEventListener('click', toggleMapMode);
     }
 
     const refreshBtn = document.getElementById('refreshBtn');
