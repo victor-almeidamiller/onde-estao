@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onde estão Victor & Maicon agora?</title>
+<style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+        font-family: Georgia, 'Times New Roman', serif;
+        background-color: #f7f3e9;
+        color: #24303f;
+        margin: 0;
+        padding: 24px 16px;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .card {
+        max-width: 480px;
+        width: 100%;
+        background-color: #fbf9f4;
+        border-radius: 16px;
+        border-top: 5px solid #c9a227;
+        box-shadow: 0 10px 30px rgba(15,27,45,0.15);
+        padding: 32px 28px;
+        text-align: center;
+    }
+    h1 {
+        font-size: 1.4rem;
+        color: #10233b;
+        margin: 0 0 4px 0;
+        letter-spacing: 0.3px;
+    }
+    .subtitle {
+        font-size: 0.85rem;
+        color: #7a5b12;
+        margin-bottom: 6px;
+        font-style: italic;
+    }
+    .intro-text {
+        font-size: 0.8rem;
+        color: #5f6c6f;
+        margin-bottom: 18px;
+        line-height: 1.4;
+    }
+    .trip-day {
+        display: inline-block;
+        background-color: #10233b;
+        color: #fbf9f4;
+        font-size: 0.72rem;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+        border-radius: 20px;
+        padding: 4px 12px;
+        margin-bottom: 14px;
+    }
+    .time-diff {
+        font-size: 0.78rem;
+        color: #7a5b12;
+        margin-top: -14px;
+        margin-bottom: 20px;
+    }
+    .flag {
+        font-size: 3.2rem;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+    .city {
+        font-size: 1.7rem;
+        font-weight: bold;
+        color: #10233b;
+        margin-bottom: 2px;
+    }
+    .country {
+        font-size: 1rem;
+        color: #5f6c6f;
+        margin-bottom: 22px;
+    }
+    .time-block {
+        background-color: #fbf3de;
+        border-radius: 10px;
+        padding: 14px 10px;
+        margin-bottom: 20px;
+    }
+    .time-label {
+        font-size: 0.75rem;
+        color: #7a5b12;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+    }
+    .time-value {
+        font-size: 2.4rem;
+        font-weight: bold;
+        color: #10233b;
+        font-variant-numeric: tabular-nums;
+    }
+    .activity-label {
+        font-size: 0.75rem;
+        color: #7a5b12;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+    }
+    .activity {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #10233b;
+        background-color: #eef1f6;
+        border-radius: 10px;
+        padding: 14px 16px;
+        line-height: 1.4;
+    }
+    .activity.transit {
+        background-color: #e3edf5;
+        border-left: 4px solid #10233b;
+    }
+    .flight-banner {
+        background-color: #10233b;
+        color: #fbf9f4;
+        border-radius: 12px;
+        padding: 26px 20px;
+        line-height: 1.6;
+    }
+    .flight-banner .flight-route {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    .flight-banner .flight-eta {
+        font-size: 0.9rem;
+        color: #d9c58a;
+    }
+    .map-stage-wrap {
+        position: relative;
+        width: 100%;
+        max-width: 260px;
+        margin: 0 auto 20px;
+    }
+    .region-wrap {
+        border-radius: 12px;
+        overflow: hidden;
+        background-color: #dce8ef;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+    }
+    .region-wrap svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+    .map-toggle {
+        display: block;
+        margin: 0 auto 18px;
+        background: none;
+        border: 1px solid #c9a227;
+        color: #7a5b12;
+        border-radius: 6px;
+        padding: 5px 12px;
+        font-size: 0.72rem;
+        cursor: pointer;
+        font-family: inherit;
+    }
+    .real-map-note {
+        font-size: 0.7rem;
+        color: #5f6c6f;
+        text-align: center;
+        margin-bottom: 10px;
+        font-style: italic;
+    }
+    #realMapBox {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 18px;
+        background-color: #dce8ef;
+    }
+    .footer-note {
+        margin-top: 22px;
+        font-size: 0.78rem;
+        color: #5f6c6f;
+    }
+    .footer-note button {
+        background: none;
+        border: 1px solid #c9a227;
+        color: #7a5b12;
+        border-radius: 6px;
+        padding: 4px 12px;
+        font-size: 0.78rem;
+        cursor: pointer;
+        margin-top: 8px;
+        font-family: inherit;
+    }
+    .status-banner {
+        background-color: #eef1f6;
+        border-radius: 10px;
+        padding: 20px 16px;
+        color: #10233b;
+        font-size: 1.05rem;
+        font-weight: bold;
+        line-height: 1.5;
+    }
+</style>
+</head>
+<body>
+<div class="card">
+    <h1>✈️ Victor &amp; Maicon</h1>
+    <div class="subtitle">EuroTrip 2026 — onde eles estão agora</div>
+    <div class="intro-text">Essa página mostra, ao vivo, onde eles estão e o que estão fazendo. Atualiza sozinha — não precisa fazer nada, só voltar aqui quando quiser dar uma olhada.</div>
+    <div id="content"></div>
+    <div class="footer-note">
+        Atualiza sozinho a cada minuto.
+        <br>
+        <button id="refreshBtn">Atualizar agora</button>
+    </div>
+</div>
+
+<script>
+    // ===== Fusos horários por país =====
+    const TZ = {
+        'Brasil': 'America/Sao_Paulo',
+        'Angola': 'Africa/Luanda',
+        'Portugal': 'Europe/Lisbon',
+        'Espanha': 'Europe/Madrid',
+        'Itália': 'Europe/Rome',
+        'França': 'Europe/Paris',
+        'Reino Unido': 'Europe/London'
+    };
+    const FLAG = {
+        'Brasil': '🇧🇷',
+        'Angola': '🇦🇴',
+        'Portugal': '🇵🇹',
+        'Espanha': '🇪🇸',
+        'Itália': '🇮🇹',
+        'França': '🇫🇷',
+        'Reino Unido': '🇬🇧'
+    };
+
+    // ===== Coordenadas (lat, lon) de cada cidade, pro globo e pro pino =====
+    const COORDS = {
+        'São Paulo': [-23.55, -46.63],
+        'Luanda': [-8.84, 13.23],
+        'Lisboa': [38.72, -9.14],
+        'Madrid': [40.42, -3.70],
+        'Barcelona': [41.39, 2.17],
+        'Roma': [41.90, 12.50],
+        'Siena': [43.32, 11.33],
+        'Monteriggioni': [43.38, 11.22],
+        'Firenze': [43.77, 11.26],
+        'La Spezia': [44.10, 9.82],
+        'Pisa': [43.72, 10.40],
+        'Paris': [48.86, 2.35],
+        'Versalhes': [48.80, 2.13],
+        'Beauvais': [49.43, 2.08],
+        'Edimburgo': [55.95, -3.19],
+        'Londres': [51.51, -0.13]
+    };
+
+    // ===== Mapas regionais detalhados (política real) =====
+    const REGION_MAPS = {
+        Europa: {
+            countries: ['Portugal', 'Espanha', 'França', 'Itália', 'Reino Unido'],
+            viewW: 600, viewH: 450, lonMin: -12, lonMax: 24, latMin: 34, latMax: 61,
+            shapes: [
+                { country: null, d: 'M266.7,0 L600,0 L600,183.3 L533.3,266.7 L450,283.3 L428.3,253.3 L416.7,241.7 L373.3,241.7 L316.7,251.7 L326.7,225 L336.7,200 L306.7,191.7 L296.7,170 L241.7,166.7 L233.3,158.3 L316.7,133.3 L366.7,100 L366.7,50 Z' },
+                { country: null, d: 'M78.3,96.7 L108.3,106.7 L100,126.7 L91.7,150 L41.7,158.3 L38.3,135 L58.3,108.3 Z' },
+                { country: 'Reino Unido', d: 'M148.3,40 L133.3,58.3 L100,75 L115,85 L140,106.7 L120,126.7 L113.3,155 L105,181.7 L168.3,171.7 L223.3,170 L215,158.3 L228.3,135 L196.7,121.7 L166.7,86.7 L155,83.3 L166.7,55 Z' },
+                { country: 'França', d: 'M241.7,166.7 L201.7,193.3 L125,206.7 L163.3,230 L180,256.7 L175,291.7 L230,305 L250,300 L290,295 L321.7,288.3 L316.7,281.7 L316.7,251.7 L326.7,225 L336.7,200 L306.7,191.7 L296.7,170 Z' },
+                { country: 'França', d: 'M356.7,300 L358.3,306.7 L350,323.3 L343.3,311.7 L353.3,300 Z' },
+                { country: 'Espanha', d: 'M66.7,293.3 L100,291.7 L136.7,293.3 L170,295 L253.3,303.3 L236.7,333.3 L203.3,358.3 L191.7,378.3 L126.7,405 L106.7,416.7 L76.7,396.7 L83.3,375 L86.7,350 L95,333.3 L73.3,300 Z' },
+                { country: 'Portugal', d: 'M51.7,316.7 L55,320 L51.7,340 L43.3,360 L41.7,371.7 L51.7,400 L76.7,400 L83.3,391.7 L83.3,375 L86.7,350 L95,333.3 L63.3,316.7 Z' },
+                { country: 'Itália', d: 'M428.3,253.3 L405,260 L405,281.7 L465,318.3 L498.3,343.3 L481.7,353.3 L461.7,380 L438.3,340 L396.7,315 L371.7,288.3 L348.3,276.7 L328.3,260 L316.7,251.7 L373.3,241.7 L416.7,241.7 Z' },
+                { country: 'Itália', d: 'M406.7,380 L460,378.3 L455,400 L406.7,405 Z' },
+                { country: 'Itália', d: 'M336.7,328.3 L361.7,333.3 L358.3,365 L340,363.3 Z' }
+            ]
+        },
+        Brasil: {
+            countries: ['Brasil'],
+            viewW: 400, viewH: 400, lonMin: -74, lonMax: -34, latMin: -34, latMax: 6,
+            shapes: [
+                { country: 'Brasil', d: 'M140,10 L230,40 L300,70 L360,90 L390,140 L360,190 L340,260 L310,290 L260,310 L230,360 L210,390 L170,360 L200,310 L160,260 L140,220 L50,160 L40,100 L70,60 L140,40 Z' }
+            ]
+        },
+        Angola: {
+            countries: ['Angola'],
+            viewW: 400, viewH: 400, lonMin: 10, lonMax: 26, latMin: -20, latMax: -3,
+            shapes: [
+                { country: 'Angola', d: 'M50,47.1 L75,70.6 L75,141.2 L75,235.3 L50,352.9 L225,329.4 L300,282.4 L350,188.2 L275,70.6 L150,47.1 Z' }
+            ]
+        }
+    };
+
+    // ===== Modo "mapa real" (OpenStreetMap via Leaflet) — precisa internet =====
+    // Fica desligado por padrão (o site continua funcionando 100% offline).
+    // Só carrega Leaflet.js da internet se a pessoa clicar no botão pra testar.
+    let useRealMap = false;
+    let leafletLoading = false;
+    let realMapInstance = null;
+
+    function toggleMapMode() {
+        useRealMap = !useRealMap;
+        render();
+    }
+
+    function ensureLeaflet(callback) {
+        if (window.L) { callback(); return; }
+        if (leafletLoading) { setTimeout(() => ensureLeaflet(callback), 200); return; }
+        leafletLoading = true;
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        document.head.appendChild(link);
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        script.onload = () => { leafletLoading = false; callback(); };
+        script.onerror = () => {
+            leafletLoading = false;
+            const box = document.getElementById('realMapBox');
+            if (box) box.innerHTML = '<div style="padding:16px;font-size:0.8rem;color:#5f6c6f;">Não consegui carregar o mapa (sem internet?).</div>';
+        };
+        document.body.appendChild(script);
+    }
+
+    function initRealMap(current) {
+        const coord = COORDS[current.city];
+        const box = document.getElementById('realMapBox');
+        if (!box || !coord || !window.L) return;
+        if (realMapInstance) { realMapInstance.remove(); realMapInstance = null; }
+        const map = L.map(box, { zoomControl: true, attributionControl: true }).setView(coord, 6);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+        L.marker(coord).addTo(map).bindPopup(`${current.city}, ${current.country}`).openPopup();
+        realMapInstance = map;
+        setTimeout(() => map.invalidateSize(), 150);
+    }
+
+    function latLonToXYRegion(lat, lon, region) {
+        return {
+            x: (lon - region.lonMin) / (region.lonMax - region.lonMin) * region.viewW,
+            y: (region.latMax - lat) / (region.latMax - region.latMin) * region.viewH
+        };
+    }
+
+    // Mapa político de verdade (Europa/Brasil/Angola) com o país atual
+    // destacado em dourado e o pino na cidade exata.
+    function buildZoomedMapSVG(current) {
+        const coord = COORDS[current.city];
+        let region = null, regionKey = null;
+        for (const [key, r] of Object.entries(REGION_MAPS)) {
+            if (r.countries.includes(current.country)) { region = r; regionKey = key; break; }
+        }
+        if (!region || !coord) return { html: '', regionKey: null };
+
+        const shapesHtml = region.shapes.map(s => {
+            const active = s.country === current.country;
+            const fill = active ? '#c9a227' : '#b9c6d6';
+            const stroke = active ? '#7a5b12' : '#7d8fa3';
+            return `<path d="${s.d}" fill="${fill}" stroke="${stroke}" stroke-width="1"/>`;
+        }).join('');
+
+        const { x, y } = latLonToXYRegion(coord[0], coord[1], region);
+        const pin = `
+            <circle cx="${x}" cy="${y}" r="5" fill="none" stroke="#c9a227" stroke-width="2" class="map-pulse"/>
+            <path transform="translate(${x},${y - 17})"
+                d="M0,0 C-7,0 -12,5 -12,12 C-12,21 0,34 0,34 C0,34 12,21 12,12 C12,5 7,0 0,0 Z"
+                fill="#c9a227" stroke="#7a5b12" stroke-width="1"/>
+            <circle cx="${x}" cy="${y - 5}" r="4" fill="#fbf9f4"/>
+        `;
+
+        const html = `
+            <svg viewBox="0 0 ${region.viewW} ${region.viewH}" xmlns="http://www.w3.org/2000/svg">
+                <rect width="${region.viewW}" height="${region.viewH}" fill="#dce8ef"/>
+                ${shapesHtml}
+                ${pin}
+            </svg>
+        `;
+        return { html, regionKey };
+    }
+
+    // Monta o bloco do mapa: se o país mudou desde a última vez, mostra a
+    // animação globo→zoom; se é o mesmo país de antes, mostra só o mapa já
+    // "assentado" (sem repetir a animação toda vez que o relógio atualiza).
+    function buildMapBlock(current) {
+        const zoomed = buildZoomedMapSVG(current);
+        if (!zoomed.html) { lastCountryKey = null; return ''; }
+
+        if (current.country !== lastCountryKey) {
+            const coord = COORDS[current.city];
+            const globeSvg = coord ? buildGlobeSVG(coord[0], coord[1]) : '';
+            lastCountryKey = current.country;
+            return `
+                <div class="map-stage-wrap">
+                    <div class="globe-wrap animate-in">
+                        ${globeSvg}
+                        <div class="globe-shade"></div>
+                    </div>
+                    <div class="region-wrap animate-in">
+                        ${zoomed.html}
+                    </div>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="map-stage-wrap">
+                <div class="region-wrap static">
+                    ${zoomed.html}
+                </div>
+            </div>
+        `;
+    }
+
+    // ===== Converte data/hora local (num fuso específico) pra instante UTC real =====
+    // Funciona certinho mesmo com horário de verão, porque usa o Intl pra
+    // descobrir o offset de verdade daquele fuso naquela data exata.
+    function zonedTimeToUtc(dateStr, timeStr, timeZone) {
+        const [year, month, day] = dateStr.split('-').map(Number);
+        const [hour, minute] = timeStr.split(':').map(Number);
+        const utcGuess = new Date(Date.UTC(year, month - 1, day, hour, minute, 0));
+        const dtf = new Intl.DateTimeFormat('en-US', {
+            timeZone, hourCycle: 'h23',
+            year: 'numeric', month: '2-digit', day: '2-digit',
+            hour: '2-digit', minute: '2-digit', second: '2-digit'
+        });
+        const parts = dtf.formatToParts(utcGuess);
+        const map = {};
+        parts.forEach(p => { map[p.type] = p.value; });
+        const asUTC = Date.UTC(+map.year, +map.month - 1, +map.day, +map.hour, +map.minute, +map.second);
+        const offset = asUTC - utcGuess.getTime();
+        return new Date(utcGuess.getTime() - offset);
+    }
+
+    // ===== Roteiro completo: data, horário, cidade, país, evento =====
+    // (extraído do site principal do roteiro, dia 05/10 a 30/10/2026)
+    const RAW_EVENTS = [
+        ['2026-10-05','18:05','São Paulo','Brasil','Voo: São Paulo → Luanda (partida)'],
+        ['2026-10-06','06:40','Luanda','Angola','Conexão em Luanda (espera 6h10)'],
+        ['2026-10-06','13:00','Luanda','Angola','Voo: Luanda → Lisboa (partida)'],
+        ['2026-10-06','20:35','Lisboa','Portugal','Chegada em Lisboa'],
+        ['2026-10-06','22:00','Lisboa','Portugal','Hotel Check-in'],
+        ['2026-10-06','23:00','Lisboa','Portugal','Jantar'],
+        ['2026-10-06','23:45','Lisboa','Portugal','Mercado'],
+        ['2026-10-07','11:00','Lisboa','Portugal','Hotel Check-out'],
+        ['2026-10-07','11:30','Lisboa','Portugal','Pequeno-almoço'],
+        ['2026-10-07','12:10','Lisboa','Portugal','Miradouro de São Pedro de Alcântara'],
+        ['2026-10-07','12:55','Lisboa','Portugal','Convento do Carmo'],
+        ['2026-10-07','13:30','Lisboa','Portugal','Sé de Lisboa'],
+        ['2026-10-07','14:00','Lisboa','Portugal','Castelo de São Jorge'],
+        ['2026-10-07','14:45','Lisboa','Portugal','Miradouro da Senhora do Monte'],
+        ['2026-10-07','19:05','Lisboa','Portugal','Voo: Lisboa → Madrid (partida)'],
+        ['2026-10-07','21:25','Madrid','Espanha','Chegada em Madrid'],
+        ['2026-10-07','22:10','Madrid','Espanha','Hotel Check-in'],
+        ['2026-10-07','22:30','Madrid','Espanha','Jantar'],
+        ['2026-10-07','23:10','Madrid','Espanha','Mercado'],
+        ['2026-10-08','09:00','Madrid','Espanha','Grande Via'],
+        ['2026-10-08','10:00','Madrid','Espanha','Porta do Sol'],
+        ['2026-10-08','10:45','Madrid','Espanha','Chocolataria San Ginés'],
+        ['2026-10-08','11:30','Madrid','Espanha','Paróquia de San Ginés'],
+        ['2026-10-08','12:00','Madrid','Espanha','Praça Maior'],
+        ['2026-10-08','12:30','Madrid','Espanha','Almoço'],
+        ['2026-10-08','14:00','Madrid','Espanha','Palácio Real de Madrid'],
+        ['2026-10-08','18:30','Madrid','Espanha','Templo de Debod (pôr do sol)'],
+        ['2026-10-08','19:30','Madrid','Espanha','Jantar'],
+        ['2026-10-09','10:00','Madrid','Espanha','Museu do Prado'],
+        ['2026-10-09','13:00','Madrid','Espanha','Parque do Retiro'],
+        ['2026-10-09','15:00','Madrid','Espanha','Almoço'],
+        ['2026-10-09','20:00','Madrid','Espanha','Jantar'],
+        ['2026-10-10','07:00','Madrid','Espanha','Hotel Check-out'],
+        ['2026-10-10','08:27','Madrid','Espanha','Trem: Madrid → Barcelona (partida)'],
+        ['2026-10-10','11:44','Barcelona','Espanha','Chegada em Barcelona'],
+        ['2026-10-10','12:00','Barcelona','Espanha','Hotel Check-in'],
+        ['2026-10-10','12:15','Barcelona','Espanha','Casa Milà - La Pedrera'],
+        ['2026-10-10','12:45','Barcelona','Espanha','Casa Batlló'],
+        ['2026-10-10','13:30','Barcelona','Espanha','Almoço'],
+        ['2026-10-10','14:30','Barcelona','Espanha','Praça Real'],
+        ['2026-10-10','15:00','Barcelona','Espanha','Catedral de Barcelona'],
+        ['2026-10-10','15:30','Barcelona','Espanha','Praça de Sant Jaume'],
+        ['2026-10-10','16:30','Barcelona','Espanha','Arco do Triunfo'],
+        ['2026-10-10','18:15','Barcelona','Espanha','Sagrada Família'],
+        ['2026-10-10','20:30','Barcelona','Espanha','Jantar'],
+        ['2026-10-11','08:00','Barcelona','Espanha','Café da manhã'],
+        ['2026-10-11','11:00','Barcelona','Espanha','Hotel Check-out'],
+        ['2026-10-11','13:00','Barcelona','Espanha','Voo: Barcelona → Roma (partida)'],
+        ['2026-10-11','14:55','Roma','Itália','Chegada em Roma'],
+        ['2026-10-11','16:10','Roma','Itália','Hotel Check-in'],
+        ['2026-10-11','18:00','Roma','Itália','Fonte de Trevi'],
+        ['2026-10-11','18:30','Roma','Itália','Jantar'],
+        ['2026-10-11','19:30','Roma','Itália','Panteão (iluminado)'],
+        ['2026-10-11','20:00','Roma','Itália','Praça Navona (iluminada)'],
+        ['2026-10-11','20:30','Roma','Itália','Monumento a Vítor Emanuel II'],
+        ['2026-10-11','21:15','Roma','Itália','Coliseu (iluminado)'],
+        ['2026-10-12','07:00','Roma','Itália','Café da manhã & Fonte de Trevi'],
+        ['2026-10-12','07:45','Roma','Itália','Panteão'],
+        ['2026-10-12','08:15','Roma','Itália','Praça Navona & Sant\'Agnese in Agone'],
+        ['2026-10-12','09:00','Roma','Itália','Monumento a Vítor Emanuel II'],
+        ['2026-10-12','09:30','Roma','Itália','Praça do Capitólio & Fórum Romano'],
+        ['2026-10-12','10:15','Roma','Itália','Coliseu'],
+        ['2026-10-12','11:50','Roma','Itália','Arco de Constantino'],
+        ['2026-10-12','12:00','Roma','Itália','Almoço'],
+        ['2026-10-12','13:30','Roma','Itália','Trastevere (tarde livre)'],
+        ['2026-10-12','20:00','Roma','Itália','Jantar'],
+        ['2026-10-13','08:00','Roma','Itália','Hotel Check-out'],
+        ['2026-10-13','09:00','Roma','Itália','Castel Sant\'Angelo'],
+        ['2026-10-13','10:00','Roma','Itália','Museus Vaticanos + Capela Sistina'],
+        ['2026-10-13','13:00','Roma','Itália','Praça e Basílica de São Pedro'],
+        ['2026-10-13','13:30','Roma','Itália','Almoço'],
+        ['2026-10-13','14:30','Roma','Itália','Buscar bagagem no locker + tarde livre'],
+        ['2026-10-13','17:45','Roma','Itália','Ônibus: Roma → Siena (partida)'],
+        ['2026-10-13','20:24','Siena','Itália','Chegada em Siena'],
+        ['2026-10-13','20:40','Siena','Itália','Hotel Check-in'],
+        ['2026-10-13','21:00','Siena','Itália','Jantar'],
+        ['2026-10-14','07:30','Siena','Itália','Hotel Check-out'],
+        ['2026-10-14','09:00','Monteriggioni','Itália','Igreja de Santa Maria Assunta'],
+        ['2026-10-14','09:15','Monteriggioni','Itália','Museu "Monteriggioni em Armas"'],
+        ['2026-10-14','09:30','Monteriggioni','Itália','Passeio pelas Muralhas'],
+        ['2026-10-14','13:15','Siena','Itália','Almoço'],
+        ['2026-10-14','14:15','Siena','Itália','Praça do Campo & Torre do Mangia'],
+        ['2026-10-14','15:00','Siena','Itália','Museu Cívico (Palácio Público)'],
+        ['2026-10-14','15:45','Siena','Itália','Catedral de Siena & Biblioteca Piccolomini'],
+        ['2026-10-14','18:30','Siena','Itália','Pôr do Sol'],
+        ['2026-10-14','19:18','Siena','Itália','Trem: Siena → Firenze (partida)'],
+        ['2026-10-14','20:52','Firenze','Itália','Chegada em Firenze'],
+        ['2026-10-14','21:32','Firenze','Itália','Hotel Check-in'],
+        ['2026-10-14','22:00','Firenze','Itália','Jantar'],
+        ['2026-10-15','07:30','Firenze','Itália','Hotel Check-out'],
+        ['2026-10-15','08:30','Firenze','Itália','Praça da Catedral'],
+        ['2026-10-15','10:30','Firenze','Itália','Praça da Senhoria & Palácio Vecchio'],
+        ['2026-10-15','11:30','Firenze','Itália','Mercado Novo'],
+        ['2026-10-15','12:30','Firenze','Itália','Almoço'],
+        ['2026-10-15','14:00','Firenze','Itália','Ponte Vecchio & Galeria dei Lanzi'],
+        ['2026-10-15','14:30','Firenze','Itália','Buscar lanche (para levar)'],
+        ['2026-10-15','15:30','Firenze','Itália','Oltrarno'],
+        ['2026-10-15','17:00','Firenze','Itália','Jardim das Rosas'],
+        ['2026-10-15','17:30','Firenze','Itália','Praça Michelangelo (pôr do sol)'],
+        ['2026-10-15','19:53','Firenze','Itália','Trem: Firenze → La Spezia (partida)'],
+        ['2026-10-15','22:14','La Spezia','Itália','Chegada em La Spezia'],
+        ['2026-10-15','22:30','La Spezia','Itália','Hotel Check-in'],
+        ['2026-10-16','07:00','La Spezia','Itália','Hotel Check-out'],
+        ['2026-10-16','20:11','La Spezia','Itália','Trem: La Spezia → Pisa (partida)'],
+        ['2026-10-16','21:27','Pisa','Itália','Chegada em Pisa'],
+        ['2026-10-16','21:34','Pisa','Itália','Hotel Check-in'],
+        ['2026-10-17','05:30','Pisa','Itália','Hotel Check-out'],
+        ['2026-10-17','06:00','Pisa','Itália','Torre de Pisa'],
+        ['2026-10-17','09:15','Pisa','Itália','Voo: Pisa → Paris (partida)'],
+        ['2026-10-17','11:00','Paris','França','Chegada em Paris'],
+        ['2026-10-17','13:15','Paris','França','Almoço'],
+        ['2026-10-17','15:00','Paris','França','Hotel Check-in'],
+        ['2026-10-17','16:00','Paris','França','Vista do topo da Galeries Lafayette'],
+        ['2026-10-17','16:30','Paris','França','Igreja da Madeleine'],
+        ['2026-10-17','17:00','Paris','França','Avenida dos Campos Elíseos'],
+        ['2026-10-17','17:30','Paris','França','Arco do Triunfo'],
+        ['2026-10-17','18:00','Paris','França','Trocadéro'],
+        ['2026-10-17','18:30','Paris','França','Torre Eiffel'],
+        ['2026-10-17','19:00','Paris','França','Jantar'],
+        ['2026-10-17','19:30','Paris','França','Torre Eiffel iluminada'],
+        ['2026-10-18','08:00','Paris','França','Metrô até Montmartre'],
+        ['2026-10-18','08:15','Paris','França','Montmartre'],
+        ['2026-10-18','09:30','Paris','França','Metrô até o Louvre'],
+        ['2026-10-18','09:50','Paris','França','Louvre'],
+        ['2026-10-18','10:15','Paris','França','Jardim das Tulherias'],
+        ['2026-10-18','10:45','Paris','França','Santa Capela'],
+        ['2026-10-18','11:00','Paris','França','Notre-Dame'],
+        ['2026-10-18','11:45','Paris','França','Livraria Shakespeare and Company'],
+        ['2026-10-18','12:10','Paris','França','Panteão'],
+        ['2026-10-18','12:30','Paris','França','Jardim de Luxemburgo'],
+        ['2026-10-18','13:15','Paris','França','Almoço'],
+        ['2026-10-18','14:30','Paris','França','Ilha de São Luís'],
+        ['2026-10-18','15:15','Paris','França','Marais / Praça dos Vosges'],
+        ['2026-10-18','19:00','Paris','França','Jantar'],
+        ['2026-10-18','21:00','Paris','França','Moulin Rouge (iluminado)'],
+        ['2026-10-19','09:00','Paris','França','Saída do hotel'],
+        ['2026-10-19','09:15','Paris','França','Canal Saint-Martin'],
+        ['2026-10-19','10:51','Versalhes','França','Palácio de Versalhes + Jardins'],
+        ['2026-10-20','07:00','Paris','França','Hotel Check-out & café da manhã'],
+        ['2026-10-20','12:00','Beauvais','França','Ônibus até o centro'],
+        ['2026-10-20','12:15','Beauvais','França','Catedral de Beauvais & Basse Œuvre'],
+        ['2026-10-20','13:00','Beauvais','França','MUDO – Museu do Oise'],
+        ['2026-10-20','13:45','Beauvais','França','Maladrerie Saint-Lazare'],
+        ['2026-10-20','14:30','Beauvais','França','Parque Marcel Dassault'],
+        ['2026-10-20','15:00','Beauvais','França','Ônibus de volta pro aeroporto'],
+        ['2026-10-20','18:15','Beauvais','França','Voo: Paris (Beauvais) → Edimburgo (partida)'],
+        ['2026-10-20','18:55','Edimburgo','Reino Unido','Chegada em Edimburgo'],
+        ['2026-10-20','20:00','Edimburgo','Reino Unido','Hotel Check-in'],
+        ['2026-10-21','09:00','Edimburgo','Reino Unido','Edinburgh Castle'],
+        ['2026-10-21','09:15','Edimburgo','Reino Unido','Grassmarket'],
+        ['2026-10-21','09:30','Edimburgo','Reino Unido','The Vennel'],
+        ['2026-10-21','09:45','Edimburgo','Reino Unido','Victoria Street'],
+        ['2026-10-21','10:00','Edimburgo','Reino Unido','Royal Mile (Old Town)'],
+        ['2026-10-21','10:30','Edimburgo','Reino Unido','St Giles\' Cathedral'],
+        ['2026-10-21','11:00','Edimburgo','Reino Unido','Greyfriars Kirkyard'],
+        ['2026-10-21','11:20','Edimburgo','Reino Unido','Museu Nacional da Escócia'],
+        ['2026-10-21','13:00','Edimburgo','Reino Unido','Almoço'],
+        ['2026-10-21','14:00','Edimburgo','Reino Unido','Cockburn Street'],
+        ['2026-10-21','14:45','Edimburgo','Reino Unido','Tarde livre na Old Town'],
+        ['2026-10-21','19:00','Edimburgo','Reino Unido','Jantar'],
+        ['2026-10-22','09:00','Edimburgo','Reino Unido','Descida pela Royal Mile até Holyrood'],
+        ['2026-10-22','09:20','Edimburgo','Reino Unido','Palácio de Holyroodhouse'],
+        ['2026-10-22','10:00','Edimburgo','Reino Unido','Arthur\'s Seat (trilha)'],
+        ['2026-10-22','12:00','Edimburgo','Reino Unido','Almoço'],
+        ['2026-10-22','13:15','Edimburgo','Reino Unido','Colina de Calton'],
+        ['2026-10-22','15:00','Edimburgo','Reino Unido','Tarde livre'],
+        ['2026-10-22','19:00','Edimburgo','Reino Unido','Jantar'],
+        ['2026-10-23','09:00','Edimburgo','Reino Unido','Jardins de Princes Street'],
+        ['2026-10-23','09:40','Edimburgo','Reino Unido','Galeria Nacional da Escócia'],
+        ['2026-10-23','10:30','Edimburgo','Reino Unido','Galeria Nacional de Retratos da Escócia'],
+        ['2026-10-23','11:15','Edimburgo','Reino Unido','New Town georgiana'],
+        ['2026-10-23','12:00','Edimburgo','Reino Unido','Almoço'],
+        ['2026-10-23','13:15','Edimburgo','Reino Unido','Vila de Dean'],
+        ['2026-10-23','15:00','Edimburgo','Reino Unido','Tarde livre'],
+        ['2026-10-23','19:00','Edimburgo','Reino Unido','Jantar'],
+        ['2026-10-24','11:00','Edimburgo','Reino Unido','Hotel Check-out'],
+        ['2026-10-24','14:50','Edimburgo','Reino Unido','Voo: Edimburgo → Londres (partida)'],
+        ['2026-10-24','16:15','Londres','Reino Unido','Chegada em Londres (Stansted)'],
+        ['2026-10-24','19:30','Londres','Reino Unido','Hotel Check-in'],
+        ['2026-10-24','20:00','Londres','Reino Unido','Palácio de Buckingham à noite'],
+        ['2026-10-24','20:20','Londres','Reino Unido','Big Ben & Casas do Parlamento à noite'],
+        ['2026-10-24','20:35','Londres','Reino Unido','London Eye à noite'],
+        ['2026-10-24','21:00','Londres','Reino Unido','Jantar'],
+        ['2026-10-25','08:00','Londres','Reino Unido','Café da manhã'],
+        ['2026-10-25','09:00','Londres','Reino Unido','Abadia de Westminster'],
+        ['2026-10-25','09:20','Londres','Reino Unido','Big Ben & Casas do Parlamento'],
+        ['2026-10-25','09:45','Londres','Reino Unido','London Eye'],
+        ['2026-10-25','10:15','Londres','Reino Unido','South Bank'],
+        ['2026-10-25','12:00','Londres','Reino Unido','Almoço'],
+        ['2026-10-25','13:00','Londres','Reino Unido','Tower Bridge & Torre de Londres'],
+        ['2026-10-25','14:15','Londres','Reino Unido','Tarde livre'],
+        ['2026-10-25','19:00','Londres','Reino Unido','Jantar'],
+        ['2026-10-26','08:00','Londres','Reino Unido','Café da manhã'],
+        ['2026-10-26','10:00','Londres','Reino Unido','Palácio de Buckingham'],
+        ['2026-10-26','11:00','Londres','Reino Unido','Troca da Guarda'],
+        ['2026-10-26','12:00','Londres','Reino Unido','Praça Trafalgar'],
+        ['2026-10-26','12:30','Londres','Reino Unido','Almoço'],
+        ['2026-10-26','13:30','Londres','Reino Unido','Covent Garden'],
+        ['2026-10-26','15:00','Londres','Reino Unido','Museu Britânico'],
+        ['2026-10-26','19:00','Londres','Reino Unido','Jantar'],
+        ['2026-10-27','08:00','Londres','Reino Unido','Café da manhã'],
+        ['2026-10-27','09:30','Londres','Reino Unido','Mercado de Camden'],
+        ['2026-10-27','12:30','Londres','Reino Unido','Almoço'],
+        ['2026-10-27','14:00','Londres','Reino Unido','Tarde livre'],
+        ['2026-10-27','19:00','Londres','Reino Unido','Jantar'],
+        ['2026-10-28','06:45','Londres','Reino Unido','Hotel Check-out'],
+        ['2026-10-28','12:15','Londres','Reino Unido','Voo: Londres → Lisboa (partida)'],
+        ['2026-10-28','15:05','Lisboa','Portugal','Chegada em Lisboa (retorno)'],
+        ['2026-10-28','16:40','Lisboa','Portugal','Hotel Check-in'],
+        ['2026-10-28','17:15','Lisboa','Portugal','Panteão Nacional'],
+        ['2026-10-28','17:45','Lisboa','Portugal','Terminal de Cruzeiros de Lisboa'],
+        ['2026-10-28','19:00','Lisboa','Portugal','Jantar'],
+        ['2026-10-29','08:00','Lisboa','Portugal','Café da manhã'],
+        ['2026-10-29','09:00','Lisboa','Portugal','Mosteiro dos Jerónimos (Belém)'],
+        ['2026-10-29','10:30','Lisboa','Portugal','Pastéis de Belém'],
+        ['2026-10-29','11:00','Lisboa','Portugal','Torre de Belém'],
+        ['2026-10-29','12:15','Lisboa','Portugal','Almoço em Belém'],
+        ['2026-10-29','14:30','Lisboa','Portugal','Oceanário de Lisboa'],
+        ['2026-10-29','17:45','Lisboa','Portugal','Buscar a bagagem no hotel'],
+        ['2026-10-29','18:30','Lisboa','Portugal','Jantar rápido'],
+        ['2026-10-29','22:30','Lisboa','Portugal','Voo: Lisboa → Luanda (partida)'],
+        ['2026-10-30','06:05','Luanda','Angola','Conexão em Luanda (espera 4h)'],
+        ['2026-10-30','10:35','Luanda','Angola','Voo: Luanda → São Paulo (partida)'],
+        ['2026-10-30','15:05','São Paulo','Brasil','Chegada final em São Paulo — de volta pra casa! 🎉']
+    ];
+
+    // Pré-computa o instante UTC de cada evento
+    const EVENTS = RAW_EVENTS.map(([date, time, city, country, title]) => ({
+        instant: zonedTimeToUtc(date, time, TZ[country]),
+        city, country, title
+    })).sort((a, b) => a.instant - b.instant);
+
+    // Pra saber a bandeira do destino quando eles estão voando
+    const CITY_TO_COUNTRY = {};
+    RAW_EVENTS.forEach(([, , city, country]) => {
+        if (!CITY_TO_COUNTRY[city]) CITY_TO_COUNTRY[city] = country;
+    });
+
+    const TRIP_START = EVENTS[0].instant;
+    const TRIP_END = EVENTS[EVENTS.length - 1].instant;
+    const TRIP_TOTAL_DAYS = Math.round((TRIP_END - TRIP_START) / 86400000) + 1;
+
+    function formatLocalTime(instant, timeZone) {
+        return new Intl.DateTimeFormat('pt-BR', {
+            timeZone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+        }).format(instant);
+    }
+    function formatLocalDate(instant, timeZone) {
+        return new Intl.DateTimeFormat('pt-BR', {
+            timeZone, day: '2-digit', month: '2-digit'
+        }).format(instant);
+    }
+
+    // ===== Diferença de fuso horário em relação ao Brasil (Brasília) =====
+    // Pra mãe não precisar fazer conta: "3h a mais que aqui".
+    function getUtcOffsetMinutes(instant, timeZone) {
+        const parts = new Intl.DateTimeFormat('en-US', {
+            timeZone, timeZoneName: 'shortOffset'
+        }).formatToParts(instant);
+        const tzName = parts.find(p => p.type === 'timeZoneName').value; // ex: "GMT+1"
+        const match = tzName.match(/GMT([+-]\d+)(?::(\d+))?/);
+        if (!match) return 0;
+        const h = parseInt(match[1], 10);
+        const m = match[2] ? parseInt(match[2], 10) : 0;
+        return h * 60 + (h < 0 ? -m : m);
+    }
+    function timeDiffLabel(instant, timeZone) {
+        const diffMin = getUtcOffsetMinutes(instant, timeZone) - getUtcOffsetMinutes(instant, 'America/Sao_Paulo');
+        if (diffMin === 0) return '🕐 Mesmo horário que o Brasil';
+        const diffH = Math.abs(diffMin) / 60;
+        const hTxt = diffH % 1 === 0 ? `${diffH}h` : `${diffH.toFixed(1)}h`;
+        return diffMin > 0
+            ? `🕐 ${hTxt} a mais que o horário de Brasília`
+            : `🕐 ${hTxt} a menos que o horário de Brasília`;
+    }
+
+    // Modo de teste: abrir com ?demo=2026-10-11T19:00:00 na URL simula
+    // aquela data/hora NO HORÁRIO DE BRASÍLIA, só pra pré-visualizar como
+    // a página fica durante a viagem. Sem o parâmetro, usa a hora real.
+    function getNow() {
+        const params = new URLSearchParams(window.location.search);
+        const demo = params.get('demo');
+        if (demo) {
+            const [datePart, timePart] = demo.split('T');
+            if (datePart && timePart) {
+                const parsed = zonedTimeToUtc(datePart, timePart.slice(0, 5), 'America/Sao_Paulo');
+                if (!isNaN(parsed)) return parsed;
+            }
+        }
+        return new Date();
+    }
+
+    function render() {
+        const now = getNow();
+        const content = document.getElementById('content');
+        const first = EVENTS[0];
+        const last = EVENTS[EVENTS.length - 1];
+
+        if (now < first.instant) {
+            lastCountryKey = null;
+            const diffMs = first.instant - now;
+            const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+            content.innerHTML = `
+                <div class="status-banner">
+                    🧳 A viagem ainda não começou!<br>
+                    Faltam ${days}d ${hours}h pro embarque.
+                </div>
+            `;
+            return;
+        }
+
+        if (now > last.instant) {
+            lastCountryKey = null;
+            content.innerHTML = `
+                <div class="status-banner">
+                    🏠 Victor e Maicon já voltaram pra casa!<br>
+                    A viagem terminou dia 30/10.
+                </div>
+            `;
+            return;
+        }
+
+        // Encontra o último evento cujo horário já passou = atividade atual
+        let current = EVENTS[0];
+        for (const ev of EVENTS) {
+            if (ev.instant <= now) current = ev; else break;
+        }
+
+        // "Dia X de Y" da viagem, pra ela acompanhar o progresso
+        const dayNum = Math.min(TRIP_TOTAL_DAYS, Math.max(1, Math.floor((now - TRIP_START) / 86400000) + 1));
+        const dayBadge = `<div class="trip-day">Dia ${dayNum} de ${TRIP_TOTAL_DAYS} da viagem</div>`;
+
+        // ===== Estão viajando agora (voo, trem ou ônibus entre cidades)? =====
+        // Mostra um aviso especial em vez do roteiro, já que não faz sentido
+        // dizer que "estão" numa cidade quando estão a caminho de outra.
+        const TRANSPORT_INFO = {
+            'Voo': { icon: '✈️', verbo: 'voando' },
+            'Trem': { icon: '🚆', verbo: 'no trem' },
+            'Ônibus': { icon: '🚌', verbo: 'no ônibus' }
+        };
+        const transportMatch = current.title.match(/^(Voo|Trem|Ônibus):\s*(.+?)\s*→\s*(.+?)\s*\(partida\)/);
+        if (transportMatch) {
+            const tipo = transportMatch[1];
+            const origem = transportMatch[2];
+            const destino = transportMatch[3];
+            const destinoPais = CITY_TO_COUNTRY[destino];
+            const flagOrigem = FLAG[current.country] || '🌍';
+            const flagDestino = FLAG[destinoPais] || '🌍';
+            const info = TRANSPORT_INFO[tipo];
+
+            // Próximo evento = chegada, pra dar uma previsão de horário
+            const idx = EVENTS.indexOf(current);
+            const next = EVENTS[idx + 1];
+            let eta = '';
+            if (next) {
+                const etaTz = TZ[next.country];
+                eta = `<div class="flight-eta">Chegada prevista: ${formatLocalTime(next.instant, etaTz)} (horário de ${next.city})</div>`;
+            }
+
+            lastCountryKey = null;
+            content.innerHTML = `
+                ${dayBadge}
+                <div class="flight-banner">
+                    ${info.icon}
+                    <div class="flight-route">${flagOrigem} ${origem} → ${destino} ${flagDestino}</div>
+                    Estão ${info.verbo} agora!
+                    ${eta}
+                </div>
+            `;
+            return;
+        }
+
+        const tz = TZ[current.country];
+        const localTime = formatLocalTime(now, tz);
+        const localDate = formatLocalDate(now, tz);
+        const flag = FLAG[current.country] || '🌍';
+        const timeDiff = timeDiffLabel(now, tz);
+
+        // Das 22h às 08h no horário local do país onde estão, consideramos
+        // que estão dormindo (não importa o que a última atividade do
+        // roteiro tenha sido) — não faz sentido mostrar um passeio antigo.
+        const localHour = parseInt(localTime.split(':')[0], 10);
+        const isSleeping = localHour >= 22 || localHour < 8;
+        const isConnection = /^Conexão em/.test(current.title);
+
+        // Já acordaram (passou das 8h), mas o passeio de hoje só começa mais
+        // tarde (ex: primeiro evento do dia é 10h) — nesses casos NÃO faz
+        // sentido continuar mostrando o "Jantar" ou último passeio de ontem
+        // à noite. Comparamos a data do evento atual com a data de hoje.
+        const currentEventDate = formatLocalDate(current.instant, tz);
+        const idxNow = EVENTS.indexOf(current);
+        const nextEvent = EVENTS[idxNow + 1];
+        const isStaleFromYesterday = !isSleeping && currentEventDate !== localDate;
+
+        let activityLabel = 'Agora eles estão em...';
+        let activityText = current.title;
+        let activityClass = 'activity';
+        if (isSleeping) {
+            activityLabel = 'Agora eles estão...';
+            activityText = '😴 Dormindo';
+        } else if (isConnection) {
+            activityLabel = 'Agora eles estão...';
+            activityText = '🔄 ' + current.title;
+            activityClass = 'activity transit';
+        } else if (isStaleFromYesterday) {
+            activityLabel = 'Agora eles estão...';
+            activityText = '☀️ Começando o dia';
+            activityClass = 'activity transit';
+            if (nextEvent) {
+                const nextTz = TZ[nextEvent.country];
+                activityText += `<br><span style="font-size:0.85rem;font-weight:normal;">Próximo: ${nextEvent.title} às ${formatLocalTime(nextEvent.instant, nextTz)}</span>`;
+            }
+        }
+
+        const hasMapData = !!COORDS[current.city];
+        let mapSection = '';
+        if (hasMapData && useRealMap) {
+            mapSection = `
+                <div id="realMapBox"></div>
+                <div class="real-map-note">🌐 Mapa real (OpenStreetMap) — precisa de internet</div>
+                <button class="map-toggle" id="mapToggleBtn">🎨 Ver globo estilizado (offline)</button>
+            `;
+        } else if (hasMapData) {
+            mapSection = `
+                ${buildMapBlock(current)}
+                <button class="map-toggle" id="mapToggleBtn">🌐 Ver mapa real (precisa internet)</button>
+            `;
+        }
+
+        content.innerHTML = `
+            ${dayBadge}
+            ${mapSection}
+            <div class="flag">${flag}</div>
+            <div class="city">${current.city}</div>
+            <div class="country">${current.country} — ${localDate}</div>
+            <div class="time-block">
+                <div class="time-label">Hora local</div>
+                <div class="time-value">${localTime}</div>
+            </div>
+            <div class="time-diff">${timeDiff}</div>
+            <div class="activity-label">${activityLabel}</div>
+            <div class="${activityClass}">${activityText}</div>
+        `;
+
+        if (hasMapData && useRealMap) {
+            ensureLeaflet(() => initRealMap(current));
+        }
+
+        const toggleBtn = document.getElementById('mapToggleBtn');
+        if (toggleBtn) toggleBtn.addEventListener('click', toggleMapMode);
+    }
+
+    const refreshBtn = document.getElementById('refreshBtn');
+    if (refreshBtn) refreshBtn.addEventListener('click', render);
+
+    render();
+    setInterval(render, 60 * 1000);
+</script>
+</body>
+</html>
