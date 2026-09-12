@@ -258,7 +258,7 @@
     <div class="footer-note">
         Atualiza sozinho a cada minuto.
         <br>
-        <button onclick="render()">Atualizar agora</button>
+        <button id="refreshBtn">Atualizar agora</button>
     </div>
 </div>
 
@@ -950,12 +950,12 @@
             mapSection = `
                 <div id="realMapBox"></div>
                 <div class="real-map-note">🌐 Mapa real (OpenStreetMap) — precisa de internet</div>
-                <button class="map-toggle" onclick="toggleMapMode()">🎨 Ver globo estilizado (offline)</button>
+                <button class="map-toggle" id="mapToggleBtn">🎨 Ver globo estilizado (offline)</button>
             `;
         } else if (hasMapData) {
             mapSection = `
                 ${buildMapBlock(current)}
-                <button class="map-toggle" onclick="toggleMapMode()">🌐 Ver mapa real (precisa internet)</button>
+                <button class="map-toggle" id="mapToggleBtn">🌐 Ver mapa real (precisa internet)</button>
             `;
         }
 
@@ -977,7 +977,13 @@
         if (hasMapData && useRealMap) {
             ensureLeaflet(() => initRealMap(current));
         }
+
+        const toggleBtn = document.getElementById('mapToggleBtn');
+        if (toggleBtn) toggleBtn.addEventListener('click', toggleMapMode);
     }
+
+    const refreshBtn = document.getElementById('refreshBtn');
+    if (refreshBtn) refreshBtn.addEventListener('click', render);
 
     render();
     setInterval(render, 60 * 1000);
