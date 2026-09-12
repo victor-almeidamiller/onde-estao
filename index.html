@@ -240,7 +240,7 @@
         'Reino Unido': '🇬🇧'
     };
 
-    // ===== Coordenadas (lat, lon) de cada cidade, pro globo e pro pino =====
+    // ===== Coordenadas (lat, lon) de cada cidade, pro pino no mapa =====
     const COORDS = {
         'São Paulo': [-23.55, -46.63],
         'Luanda': [-8.84, 13.23],
@@ -383,33 +383,15 @@
         return { html, regionKey };
     }
 
-    // Monta o bloco do mapa: se o país mudou desde a última vez, mostra a
-    // animação globo→zoom; se é o mesmo país de antes, mostra só o mapa já
-    // "assentado" (sem repetir a animação toda vez que o relógio atualiza).
+    // Monta o bloco do mapa: mapa político simples (Europa/Brasil/Angola)
+    // com o país atual destacado em dourado e o pino na cidade exata.
     function buildMapBlock(current) {
         const zoomed = buildZoomedMapSVG(current);
-        if (!zoomed.html) { lastCountryKey = null; return ''; }
-
-        if (current.country !== lastCountryKey) {
-            const coord = COORDS[current.city];
-            const globeSvg = coord ? buildGlobeSVG(coord[0], coord[1]) : '';
-            lastCountryKey = current.country;
-            return `
-                <div class="map-stage-wrap">
-                    <div class="globe-wrap animate-in">
-                        ${globeSvg}
-                        <div class="globe-shade"></div>
-                    </div>
-                    <div class="region-wrap animate-in">
-                        ${zoomed.html}
-                    </div>
-                </div>
-            `;
-        }
+        if (!zoomed.html) return '';
 
         return `
             <div class="map-stage-wrap">
-                <div class="region-wrap static">
+                <div class="region-wrap">
                     ${zoomed.html}
                 </div>
             </div>
@@ -738,7 +720,6 @@
         const last = EVENTS[EVENTS.length - 1];
 
         if (now < first.instant) {
-            lastCountryKey = null;
             const diffMs = first.instant - now;
             const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
@@ -752,7 +733,6 @@
         }
 
         if (now > last.instant) {
-            lastCountryKey = null;
             content.innerHTML = `
                 <div class="status-banner">
                     🏠 Victor e Maicon já voltaram pra casa!<br>
@@ -799,7 +779,6 @@
                 eta = `<div class="flight-eta">Chegada prevista: ${formatLocalTime(next.instant, etaTz)} (horário de ${next.city})</div>`;
             }
 
-            lastCountryKey = null;
             content.innerHTML = `
                 ${dayBadge}
                 <div class="flight-banner">
@@ -860,7 +839,7 @@
             mapSection = `
                 <div id="realMapBox"></div>
                 <div class="real-map-note">🌐 Mapa real (OpenStreetMap) — precisa de internet</div>
-                <button class="map-toggle" id="mapToggleBtn">🎨 Ver globo estilizado (offline)</button>
+                <button class="map-toggle" id="mapToggleBtn">🗺️ Ver mapa simples (offline)</button>
             `;
         } else if (hasMapData) {
             mapSection = `
