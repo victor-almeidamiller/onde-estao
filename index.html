@@ -174,6 +174,90 @@
         font-weight: bold;
         line-height: 1.5;
     }
+    .trip-calendar {
+        margin-top: 22px;
+        padding-top: 18px;
+        border-top: 1px dashed #d8cca4;
+        text-align: left;
+    }
+    .trip-calendar-title {
+        font-size: 0.75rem;
+        color: #7a5b12;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    .trip-calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+        margin-bottom: 14px;
+    }
+    .trip-calendar-weekday {
+        text-align: center;
+        font-size: 0.7rem;
+        font-weight: bold;
+        color: #5f6c6f;
+        padding-bottom: 2px;
+    }
+    .trip-calendar-day {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: bold;
+        color: #10233b;
+        background-color: transparent;
+    }
+    .trip-calendar-day.empty { visibility: hidden; }
+    .trip-calendar-day.notrip { color: #b4b2a9; font-weight: normal; }
+    .trip-calendar-day.transit { background-color: #a9b4b8; }
+    .trip-calendar-day.pt { background-color: #5dade2; }
+    .trip-calendar-day.es { background-color: #e8a33d; }
+    .trip-calendar-day.it { background-color: #196f3d; color: #f2e6c2; }
+    .trip-calendar-day.fr { background-color: #25417a; color: #f2e6c2; }
+    .trip-calendar-day.uk { background-color: #6a3f82; color: #f2e6c2; }
+    .trip-calendar-day.en { background-color: #7a2020; color: #f2e6c2; }
+    .trip-calendar-day.today {
+        box-shadow: 0 0 0 2px #fbf9f4, 0 0 0 4px #c9a227;
+    }
+    .trip-calendar-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.7em;
+        height: 1.7em;
+        border-radius: 50%;
+        background-color: rgba(255,255,255,0.85);
+        color: #10233b;
+    }
+    .trip-calendar-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 14px;
+        font-size: 0.72rem;
+        color: #5f6c6f;
+        justify-content: center;
+    }
+    .trip-calendar-legend span { display: inline-flex; align-items: center; }
+    .legend-swatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; }
+    .legend-pt { background-color: #5dade2; }
+    .legend-es { background-color: #e8a33d; }
+    .legend-it { background-color: #196f3d; }
+    .legend-fr { background-color: #25417a; }
+    .legend-uk { background-color: #6a3f82; }
+    .legend-en { background-color: #7a2020; }
+    .legend-transit { background-color: #a9b4b8; }
+    .trip-calendar-note {
+        font-size: 0.72rem;
+        color: #5f6c6f;
+        font-style: italic;
+        margin-top: 8px;
+        text-align: center;
+    }
 </style>
 </head>
 <body>
@@ -567,6 +651,69 @@
             : `🕐 ${hTxt} a menos que o horário de Brasília`;
     }
 
+    // ===== Calendário da viagem (mesmo calendário do site do roteiro) =====
+    // Cada dia de outubro/2026 colorido pelo país onde eles estão; dias com
+    // duas cores são dias de viagem entre um país e outro. Aqui, diferente
+    // do site do roteiro, o dia atual fica destacado com uma borda dourada.
+    const CALENDAR_DAYS = {
+        1: { cls: 'notrip' }, 2: { cls: 'notrip' }, 3: { cls: 'notrip' }, 4: { cls: 'notrip' },
+        5: { cls: 'transit' },
+        6: { grad: ['#a9b4b8', '#5dade2'] },
+        7: { grad: ['#5dade2', '#e8a33d'] },
+        8: { cls: 'es' }, 9: { cls: 'es' }, 10: { cls: 'es' },
+        11: { grad: ['#e8a33d', '#196f3d'] },
+        12: { cls: 'it' }, 13: { cls: 'it' }, 14: { cls: 'it' }, 15: { cls: 'it' }, 16: { cls: 'it' },
+        17: { grad: ['#196f3d', '#25417a'] },
+        18: { cls: 'fr' }, 19: { cls: 'fr' },
+        20: { grad: ['#25417a', '#6a3f82'] },
+        21: { cls: 'uk' }, 22: { cls: 'uk' }, 23: { cls: 'uk' },
+        24: { grad: ['#6a3f82', '#7a2020'] },
+        25: { cls: 'en' }, 26: { cls: 'en' }, 27: { cls: 'en' },
+        28: { grad: ['#7a2020', '#5dade2'] },
+        29: { grad: ['#5dade2', '#a9b4b8'] },
+        30: { cls: 'transit' },
+        31: { cls: 'notrip' }
+    };
+
+    function buildCalendarBlock(highlightDay) {
+        let cells = '';
+        for (let i = 0; i < 4; i++) cells += '<div class="trip-calendar-day empty"></div>';
+        for (let d = 1; d <= 31; d++) {
+            const info = CALENDAR_DAYS[d];
+            const todayCls = d === highlightDay ? ' today' : '';
+            if (info.grad) {
+                cells += `<div class="trip-calendar-day${todayCls}" style="background: linear-gradient(135deg, ${info.grad[0]} 50%, ${info.grad[1]} 50%);"><span class="trip-calendar-badge">${d}</span></div>`;
+            } else {
+                cells += `<div class="trip-calendar-day ${info.cls}${todayCls}">${d}</div>`;
+            }
+        }
+        return `
+            <div class="trip-calendar">
+                <div class="trip-calendar-title">Calendário da viagem</div>
+                <div class="trip-calendar-grid">
+                    <div class="trip-calendar-weekday">D</div>
+                    <div class="trip-calendar-weekday">S</div>
+                    <div class="trip-calendar-weekday">T</div>
+                    <div class="trip-calendar-weekday">Q</div>
+                    <div class="trip-calendar-weekday">Q</div>
+                    <div class="trip-calendar-weekday">S</div>
+                    <div class="trip-calendar-weekday">S</div>
+                    ${cells}
+                </div>
+                <div class="trip-calendar-legend">
+                    <span><span class="legend-swatch legend-pt"></span>Portugal</span>
+                    <span><span class="legend-swatch legend-es"></span>Espanha</span>
+                    <span><span class="legend-swatch legend-it"></span>Itália</span>
+                    <span><span class="legend-swatch legend-fr"></span>França</span>
+                    <span><span class="legend-swatch legend-uk"></span>Escócia</span>
+                    <span><span class="legend-swatch legend-en"></span>Inglaterra</span>
+                    <span><span class="legend-swatch legend-transit"></span>Viagem/trajeto</span>
+                </div>
+                <div class="trip-calendar-note">Dias com duas cores = viagem entre uma cidade e outra</div>
+            </div>
+        `;
+    }
+
     // Modo de teste: abrir com ?demo=2026-10-11T19:00:00 na URL simula
     // aquela data/hora NO HORÁRIO DE BRASÍLIA, só pra pré-visualizar como
     // a página fica durante a viagem. Sem o parâmetro, usa a hora real.
@@ -598,6 +745,7 @@
                     🧳 A viagem ainda não começou!<br>
                     Faltam ${days}d ${hours}h pro embarque.
                 </div>
+                ${buildCalendarBlock(null)}
             `;
             return;
         }
@@ -608,6 +756,7 @@
                     🏠 Victor e Maicon já voltaram pra casa!<br>
                     A viagem terminou dia 30/10.
                 </div>
+                ${buildCalendarBlock(null)}
             `;
             return;
         }
@@ -621,6 +770,7 @@
         // "Dia X de Y" da viagem, pra ela acompanhar o progresso
         const dayNum = Math.min(TRIP_TOTAL_DAYS, Math.max(1, Math.floor((now - TRIP_START) / 86400000) + 1));
         const dayBadge = `<div class="trip-day">Dia ${dayNum} de ${TRIP_TOTAL_DAYS} da viagem</div>`;
+        const calendarDay = dayNum + 4; // dayNum 1 = 5/out, ..., dayNum 26 = 30/out
 
         // ===== Estão viajando agora (voo, trem ou ônibus entre cidades)? =====
         // Mostra um aviso especial em vez do roteiro, já que não faz sentido
@@ -657,6 +807,7 @@
                     Estão ${info.verbo} agora!
                     ${eta}
                 </div>
+                ${buildCalendarBlock(calendarDay)}
             `;
             return;
         }
@@ -722,6 +873,7 @@
             <div class="time-diff">${timeDiff}</div>
             <div class="activity-label">${activityLabel}</div>
             <div class="${activityClass}">${activityText}</div>
+            ${buildCalendarBlock(calendarDay)}
         `;
 
         if (hasMapData) {
